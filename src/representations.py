@@ -1,6 +1,6 @@
 """RAW, PCA, and UMAP representations of standardized features."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import numpy as np
 from sklearn.decomposition import PCA
@@ -18,11 +18,16 @@ class FittedRepresentations:
 
     pca: PCA
     umap: UMAP
+    _train: np.ndarray = field(repr=False)
+    _train_umap: np.ndarray = field(repr=False)
 
     def transform(self, features: np.ndarray) -> dict[str, np.ndarray]:
         """Return RAW, PCA, and UMAP arrays in the input row order."""
         pca_features = self.pca.transform(features)
-        umap_features = self.umap.transform(features)
+        if np.array_equal(features, self._train):
+            umap_features = self._train_umap.copy()
+        else:
+            umap_features = self.umap.transform(features)
         invalid_rows = np.count_nonzero(~np.isfinite(umap_features).all(axis=1))
         if invalid_rows:
             raise ValueError(f"UMAP produced non-finite values in {invalid_rows} rows")
@@ -45,9 +50,16 @@ def fit_representations(
             f"{n_components} components"
         )
 
+    # Match the float32 precision used by UMAP when identifying duplicate rows.
+    unique_train, inverse = np.unique(
+        train.astype(np.float32), axis=0, return_inverse=True
+    )
     n_neighbors = 15
-    if n_rows <= max(n_neighbors, n_components + 1):
-        raise ValueError("Too few training rows for the configured UMAP neighborhood or embedding")
+    if len(unique_train) <= max(n_neighbors, n_components + 1):
+        raise ValueError(
+            "Too few distinct training rows for the configured UMAP "
+            "neighborhood or embedding"
+        )
 
     pca = PCA(n_components=n_components, random_state=seed).fit(train)
     umap = UMAP(
@@ -57,5 +69,10 @@ def fit_representations(
         random_state=seed,
         transform_seed=seed,
         n_jobs=1,
-    ).fit(train)
-    return FittedRepresentations(pca=pca, umap=umap)
+    ).fit(unique_train)
+    return FittedRepresentations(
+        pca=pca,
+        umap=umap,
+        _train=train.copy(),
+        _train_umap=umap.embedding_[inverse],
+    )

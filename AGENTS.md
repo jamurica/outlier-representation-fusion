@@ -17,6 +17,10 @@
   environments, credentials, and temporary artifacts out of Git.
 - Leave commits and pushes to the user. End each stage with a summary, check
   results, and a proposed commit message.
+- Keep the implementation simple, concise, and readable.
+- Prefer established library implementations over custom algorithms.
+- Avoid unnecessary abstractions, excessive complexity, and premature optimization.
+- Preserve methodological correctness, reproducibility, and essential validation.
 
 ## Implementation stages
 

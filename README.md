@@ -93,8 +93,10 @@ y_test = y[indices.test]
 
 Fit the reduced representations once on standardized training rows, then
 reuse the fitted object for each partition. RAW returns the standardized
-input in its original dimension. Record the installed UMAP version with
-experiment results because its default layout can change between releases.
+input in its original dimension. UMAP fits on unique training vectors
+and maps the coordinates back to all training rows. Record the installed
+UMAP version with experiment results because its default layout can change
+between releases.
 
 ```python
 from src.representations import fit_representations

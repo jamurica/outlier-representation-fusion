@@ -27,6 +27,12 @@ for evaluation.
 
 Use standardized original features for RAW. Apply PCA or UMAP for reduced
 representations, with UMAP configured with `n_neighbors=15` and `min_dist=0.1`.
+Fit UMAP on unique standardized training vectors at UMAP's float32
+precision for every dataset. Map the fitted coordinates back to all
+training rows in their original order. Transform every calibration and
+test row using the fitted UMAP model. Preserve the full partitions for
+detector training, calibration, and evaluation.
+
 Use the encoder output as the autoencoder (AE) representation. Train the
 autoencoder for 50 epochs using Adam and mean squared reconstruction error.
 Prefer PyTorch on CPU. All three reduced representations use
