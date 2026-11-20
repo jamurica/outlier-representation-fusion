@@ -148,12 +148,16 @@ reference.
 | E3 | Changes in detection performance from the unshifted baseline across all shift levels |
 | E4 | Association of label-free indicators with performance loss, plus representation ablation |
 
-For E4, compute the mean feature-wise Kolmogorov–Smirnov statistic
-(proposed reference: calibration versus test), the mean pairwise Spearman correlation
-of test representation scores for each detector, and the change in that
-mean agreement relative to calibration. Relate the indicators to the
-metric decrease from the matched unshifted test baseline. For the
-ablation, omit RAW, PCA, UMAP, and AE one at a time from Mean fusion and
+For E4, average the two-sided Kolmogorov–Smirnov statistics comparing
+the fixed calibration and current test distributions feature by feature.
+For each detector, average the defined pairwise Spearman correlations of
+the four raw representation score vectors. Omit pairs with a constant
+score vector. Record missing agreement when no pair yields a correlation.
+Compute agreement change as test agreement minus calibration agreement.
+Record a missing change when either agreement is missing. Compute metric
+loss as the unshifted test metric minus the current test metric for the
+same dataset, seed, detector, and method. For the ablation, omit RAW, PCA,
+UMAP, and AE one at a time from Mean fusion and
 compare each three-representation variant with the full four-representation
 mean at `delta=0` and `delta=2`.
 
@@ -167,5 +171,4 @@ parameters are identical.
 ## Implementation details to confirm at the relevant stage
 
 Confirm the exact seed list and the summaries for stability and
-associations. Resolve handling of undefined
-correlations for label-free agreement before computing it.
+associations.

@@ -196,6 +196,25 @@ for delta in SHIFT_LEVELS:
     standardized_test = features.scaler.transform(shifted_test)
 ```
 
+## Evaluation and ablation
+
+Use the original test labels to compute ROC-AUC and Average Precision.
+At `delta=0` and `delta=2`, compare full Mean fusion with the four
+leave-one-representation-out means.
+
+```python
+from src.evaluation import evaluate_scores, mean_ablation
+
+full_mean_metrics = evaluate_scores(y_test, normalized_test_matrix.mean(axis=1))
+ablated_metrics = {
+    omitted: evaluate_scores(y_test, scores)
+    for omitted, scores in mean_ablation(normalized_test_matrix).items()
+}
+```
+
+The label-free functions compare test features with calibration using KS
+and compare representation score vectors using Spearman correlation.
+
 ## Citation
 
 Han, S., Hu, X., Huang, H., Jiang, M., & Zhao, Y. (2022).
