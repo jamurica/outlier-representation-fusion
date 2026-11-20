@@ -215,6 +215,32 @@ ablated_metrics = {
 The label-free functions compare test features with calibration using KS
 and compare representation score vectors using Spearman correlation.
 
+## Run the experiments
+
+Run the full one-seed smoke test on all six datasets from the repository root.
+
+```powershell
+.\.venv\Scripts\python.exe -m scripts.run_experiments --seeds 42 --output results/smoke.csv
+```
+
+Use `--datasets` to select one or more ADBench archive names and
+`--data-dir` for an alternative dataset directory. For the main run,
+pass the five approved seed values to `--seeds` and choose a new output
+path. The runner uses one PyTorch CPU thread and refuses to overwrite
+an existing output file.
+
+The CSV contains one row per dataset, seed, shift level, detector and
+method. It includes the four individual representations, six fusion rules,
+and four Mean ablations at `delta=0` and `delta=2`. The best individual
+representation can be identified from the matching rows separately for
+each metric. A value in `omitted_representation` identifies an ablation.
+Missing agreement values appear as blank fields.
+
+Timing columns report shared wall-clock durations in seconds. Fit and
+calibration timings apply to a dataset and seed, test timing also depends
+on the shift level, and evaluation timing additionally depends on the
+detector. Use one value per timing group when aggregating durations.
+
 ## Citation
 
 Han, S., Hu, X., Huang, H., Jiang, M., & Zhao, Y. (2022).
