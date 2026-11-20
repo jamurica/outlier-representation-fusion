@@ -93,26 +93,35 @@ SIAM International Conference on Data Mining.
 [Published paper](https://epubs.siam.org/doi/abs/10.1137/1.9781611975673.66) ·
 [Author preprint](https://arxiv.org/abs/1812.01528)
 
-The original LSCP defines a local region using nearest neighbors in random
-feature subspaces and selects competent base detectors with a training-set
-pseudo target. This study uses calibration observations for neighborhoods
-and for the pseudo target. Its components are the four representations
-scored by the same detector.
+The original LSCP uses training observations for neighborhoods and the
+pseudo target. The published experiments combine 50 LOF detectors with
+varying parameters and select components using the most populated bin of
+a Pearson correlation histogram. This adaptation uses calibration as its
+reference and combines four representations of one detector. It uses fixed
+neighborhood settings and selects the two highest local correlations,
+including ties at the cutoff.
 
-Use the training-standardized original feature space for neighborhoods.
-Use 30 nearest calibration neighbors and 20 random feature subspaces.
-The proposed design retrieves 30 neighbors per subspace for each test query.
-Form the calibration pseudo target by taking
-the maximum standardized score across the four representations for each
-observation. Within the local region, measure each representation's
-competence by Pearson correlation with that pseudo target. Average the
-test scores of the selected representations.
+1. Draw 20 subspaces once per dataset and seed from the training-standardized
+   original feature space. Draw each size uniformly from the integers
+   between `ceil(d / 2)` and `d`, then sample columns without replacement.
+   Subspaces may repeat. Reuse the subspaces for all detectors and shifts.
+2. For each test row, find the 30 nearest calibration rows by Euclidean
+   distance in each subspace. Break distance ties by the lower calibration
+   row index. Keep rows receiving at least 11 votes. With fewer than three
+   retained rows, use the 30 nearest rows in the full standardized feature
+   space. A reference set with fewer than 30 rows supplies all available rows.
+3. For each detector, compute the pseudo target as the row-wise maximum of
+   the four calibration Z-scores. Measure local competence using Pearson
+   correlation between each calibration score column and the pseudo target
+   within the selected neighborhood. Keep defined negative correlations
+   in the ranking and exclude undefined correlations.
+4. Average the test Z-scores of the selected representations. Use the single
+   available representation if only one correlation is defined. Use the
+   mean of all four test Z-scores if no correlation is defined or the region
+   has fewer than three rows.
 
-Before implementation, submit a detailed design for approval covering
-subspace sampling, neighbor aggregation, competence selection with four
-components, ties, and fallback behavior for undefined correlations or
-insufficient local support. Document the final differences from the
-published method after approval.
+Recompute neighborhoods for each shifted test partition against the fixed
+calibration reference. Reuse the pseudo target and subspaces.
 
 ## Distribution shift
 
@@ -157,4 +166,4 @@ parameters are identical.
 
 Confirm the exact seed list, shift feature-count rounding, and the
 summaries for stability and associations. Resolve handling of undefined
-correlations for LSCP and label-free agreement before computing them.
+correlations for label-free agreement before computing it.

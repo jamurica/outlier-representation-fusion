@@ -166,6 +166,21 @@ fused_test = fusion.transform(raw_test_matrix, normalized_test_matrix)
 Reuse the fitted fusion for each test shift level. It returns Mean,
 Maximum, Median, Rank Average, and Consensus Weighted Average.
 
+## LSCP-AOM
+
+Compute local regions once for each test partition and reuse them for all
+detectors. Fit the pseudo target separately for each detector using
+its calibration Z-scores in RAW, PCA, UMAP, AE column order.
+
+```python
+from src.lscp import find_local_regions, fit_lscp_aom, sample_subspaces
+
+subspaces = sample_subspaces(features.train.shape[1], seed=42)
+regions = find_local_regions(features.calibration, features.test, subspaces)
+lscp = fit_lscp_aom(normalized_calibration_matrix)
+lscp_scores = lscp.transform(normalized_test_matrix, regions)
+```
+
 ## Citation
 
 Han, S., Hu, X., Huang, H., Jiang, M., & Zhao, Y. (2022).
