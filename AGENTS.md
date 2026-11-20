@@ -13,8 +13,10 @@
   streaming, online adaptation, continual learning, and adaptive detection.
 - Run relevant checks after each implementation and report actual outcomes and
   verification limits. Use only measured results in experimental reports.
-- Obtain approval before installing dependencies. Keep data, virtual
-  environments, credentials, and temporary artifacts out of Git.
+- Obtain approval before installing dependencies.
+- Version final experiment CSVs and figures in `results/analysis/`. Keep
+  raw datasets, trained model weights, virtual environments, credentials,
+  and temporary or intermediate outputs out of Git.
 - Leave commits and pushes to the user. End each stage with a summary, check
   results, and a proposed commit message.
 - Keep the implementation simple, concise, and readable.
