@@ -121,6 +121,20 @@ calibration_views["AE"] = autoencoder.transform(features.calibration)
 test_views["AE"] = autoencoder.transform(features.test)
 ```
 
+## Outlier detectors
+
+Fit a separate detector set for each training representation. Reuse the
+fitted models for calibration and test scores. The returned scores are
+continuous, with larger scores indicating greater anomalousness.
+
+```python
+from src.detectors import fit_detectors, score_detectors
+
+detectors = fit_detectors(train_views["RAW"], seed=42)
+calibration_scores = score_detectors(detectors, calibration_views["RAW"])
+test_scores = score_detectors(detectors, test_views["RAW"])
+```
+
 ## Citation
 
 Han, S., Hu, X., Huang, H., Jiang, M., & Zhao, Y. (2022).
