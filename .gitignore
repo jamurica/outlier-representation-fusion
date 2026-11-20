@@ -221,3 +221,27 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Local research data and generated experiment outputs
+/data/
+/results/
+*.npz
+
+# Local credentials
+.env.*
+!.env.example
+.aws/
+.secrets/
+credentials.json
+secrets.toml
+*.pem
+*.key
+*.pfx
+*.p12
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.bak
+*~
