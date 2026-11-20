@@ -35,16 +35,15 @@ validating the environment and before running the experiments.
 | --- | --- |
 | `docs/` | Research protocol and methodology |
 | `data/` | Local ADBench datasets |
-| `src/` | Planned experiment modules |
-| `scripts/` | Planned optional dataset downloader and experiment entry points |
+| `src/` | ADBench loader and future experiment modules |
+| `scripts/` | Optional dataset downloader and future experiment entry points |
 | `tests/` | Planned tests |
 | `results/` | Local generated CSV files and figures |
 
 ## Datasets
 
-Place these files in `data/`. Each archive is expected to contain `X` (features)
-and `y` (binary labels, where 0 is normal and 1 is an outlier). File validation
-and an optional downloader are planned for the loader stage.
+Place these files in `data/`, or run the optional downloader from the
+repository root in PowerShell after setting up the environment.
 [ADBench repository](https://github.com/Minqi824/ADBench) ·
 [Classical datasets](https://github.com/Minqi824/ADBench/tree/main/adbench/datasets/Classical)
 
@@ -54,6 +53,23 @@ and an optional downloader are planned for the loader stage.
 - [26_optdigits.npz](https://github.com/Minqi824/ADBench/blob/main/adbench/datasets/Classical/26_optdigits.npz)
 - [31_satimage-2.npz](https://github.com/Minqi824/ADBench/blob/main/adbench/datasets/Classical/31_satimage-2.npz)
 - [38_thyroid.npz](https://github.com/Minqi824/ADBench/blob/main/adbench/datasets/Classical/38_thyroid.npz)
+
+```powershell
+.\.venv\Scripts\python.exe -m scripts.download_adbench
+```
+
+The downloader checks existing archives and downloads only missing ones.
+Use `--data-dir` to choose an alternative directory. Git ignores `data/`.
+
+Load a dataset from Python with `load_dataset`. The loader validates that
+`X` is a finite numeric feature matrix and `y` is a matching binary label
+vector, where 0 is normal and 1 is an outlier.
+
+```python
+from src.adbench import load_dataset
+
+X, y = load_dataset("6_cardio.npz")
+```
 
 ## Citation
 
