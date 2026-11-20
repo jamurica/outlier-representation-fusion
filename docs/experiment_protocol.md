@@ -73,11 +73,17 @@ parameters for every test shift level.
 | Consensus Weighted Average | Weighted mean of the four standardized scores, using the fixed calibration weights below |
 | LSCP-AOM | Local selection of representations and averaging their standardized scores |
 
+For Rank Average, compute the percentile of a raw score as the number of
+calibration scores below it plus half the number tied with it, divided by
+the calibration sample count. Scores below or above the calibration range
+receive 0 or 1, respectively.
+
 For Consensus Weighted Average, compute Spearman correlation for each
-pair of representation scores on calibration data. For each representation,
-average its correlations with the other three, clip negative values to
-zero, and normalize the four weights to sum to one. If all four are
-nonpositive, use equal weights.
+pair of raw representation scores on calibration data. Count undefined
+correlations, including pairs with constant calibration scores, as zero.
+For each representation, average its correlations with the other three,
+clip negative values to zero, and normalize the four weights to sum to
+one. If all four are nonpositive, use equal weights.
 
 ### LSCP-AOM adaptation
 
@@ -149,7 +155,6 @@ parameters are identical.
 
 ## Implementation details to confirm at the relevant stage
 
-Confirm the exact seed list, shift feature-count rounding, percentile tie
-conventions, and the summaries for stability and associations. Resolve
-handling of constant scores in correlation calculations and undefined
-correlations before computing the affected methods.
+Confirm the exact seed list, shift feature-count rounding, and the
+summaries for stability and associations. Resolve handling of undefined
+correlations for LSCP and label-free agreement before computing them.

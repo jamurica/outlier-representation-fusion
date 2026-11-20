@@ -149,6 +149,23 @@ normalized_calibration = normalize_scores(calibration_scores, scalers)
 normalized_test = normalize_scores(test_scores, scalers)
 ```
 
+## Basic score fusion
+
+For one detector, stack its four representation score vectors as columns
+in RAW, PCA, UMAP, AE order. Keep the rows aligned across representations
+within each partition. Fit the percentile references and consensus
+weights from raw calibration scores.
+
+```python
+from src.fusion import fit_basic_fusion
+
+fusion = fit_basic_fusion(raw_calibration_matrix)
+fused_test = fusion.transform(raw_test_matrix, normalized_test_matrix)
+```
+
+Reuse the fitted fusion for each test shift level. It returns Mean,
+Maximum, Median, Rank Average, and Consensus Weighted Average.
+
 ## Citation
 
 Han, S., Hu, X., Huang, H., Jiang, M., & Zhao, Y. (2022).
