@@ -222,10 +222,31 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-# Local research data and generated experiment outputs
+# Local research data and experiment drafts
 /data/
-/results/
+/results/*
+!/results/analysis/
+/results/analysis/*
+!/results/analysis/combined_results.csv
+!/results/analysis/e[1-4]_*_roc_auc.csv
+!/results/analysis/e[1-4]_*_average_precision.csv
+!/results/analysis/e[1-4]_*_roc_auc.png
+!/results/analysis/e[1-4]_*_average_precision.png
+!/results/analysis/e3_roc_auc.png
+!/results/analysis/e3_average_precision.png
 *.npz
+
+# Trained model artifacts
+/checkpoints/
+/models/
+/weights/
+*.ckpt
+*.joblib
+*.onnx
+*.pkl
+*.pt
+*.pth
+*.safetensors
 
 # Local credentials
 .env.*

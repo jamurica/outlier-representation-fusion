@@ -5,7 +5,7 @@ detectors, and four test shift levels. The analysis combines 864 rows
 from the seed-42 smoke run with 3456 rows from the four remaining seeds.
 The [experiment protocol](experiment_protocol.md) defines the comparisons
 and the [README](../README.md#analyze-the-experiments) explains how to
-regenerate the local results.
+regenerate the analysis.
 
 ## Findings
 
@@ -101,11 +101,11 @@ use their configured thread settings.
 | pandas | 3.1.1 |
 | Matplotlib | 3.11.2 |
 
-## Local result files
+## Result files
 
-The recorded inputs are `results/stage12_smoke.csv` and
-`results/stage13_additional.csv`. The analyzer writes the following under
-`results/analysis/`, which Git ignores.
+The intermediate inputs are `results/stage12_smoke.csv` and
+`results/stage13_additional.csv`. The final outputs are in
+[`results/analysis/`](../results/analysis/).
 
 | Files | Contents |
 | --- | --- |

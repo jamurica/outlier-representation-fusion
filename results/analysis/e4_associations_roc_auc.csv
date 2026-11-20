@@ -1,0 +1,91 @@
+detector,method,indicator,spearman_rho,n_pairs
+Isolation Forest,AE,mean_feature_ks,0.20313130234966367,90
+Isolation Forest,AE,test_score_agreement,0.2631067721766139,90
+Isolation Forest,AE,agreement_change,-0.03754434777391158,90
+Isolation Forest,Consensus Weighted Average,mean_feature_ks,0.06148134734000398,90
+Isolation Forest,Consensus Weighted Average,test_score_agreement,0.38455269831074657,90
+Isolation Forest,Consensus Weighted Average,agreement_change,0.17451680880377884,90
+Isolation Forest,LSCP-AOM,mean_feature_ks,0.17957762439225217,90
+Isolation Forest,LSCP-AOM,test_score_agreement,0.22486921684726807,90
+Isolation Forest,LSCP-AOM,agreement_change,0.0530706827621751,90
+Isolation Forest,Maximum,mean_feature_ks,0.13130016051364363,90
+Isolation Forest,Maximum,test_score_agreement,0.3005391612133185,90
+Isolation Forest,Maximum,agreement_change,0.06139852656706589,90
+Isolation Forest,Mean,mean_feature_ks,-0.008439339930578368,90
+Isolation Forest,Mean,test_score_agreement,0.4648553103809992,90
+Isolation Forest,Mean,agreement_change,0.21542958954495908,90
+Isolation Forest,Median,mean_feature_ks,0.08044978790673758,90
+Isolation Forest,Median,test_score_agreement,0.3734868850011861,90
+Isolation Forest,Median,agreement_change,0.1142908887032789,90
+Isolation Forest,PCA,mean_feature_ks,0.1827303782359962,90
+Isolation Forest,PCA,test_score_agreement,0.09776515619212248,90
+Isolation Forest,PCA,agreement_change,-0.06618924147014034,90
+Isolation Forest,RAW,mean_feature_ks,0.07732878172852889,90
+Isolation Forest,RAW,test_score_agreement,0.3441052560593646,90
+Isolation Forest,RAW,agreement_change,0.09711592500332974,90
+Isolation Forest,Rank Average,mean_feature_ks,0.03767558824408682,90
+Isolation Forest,Rank Average,test_score_agreement,0.3576917219922545,90
+Isolation Forest,Rank Average,agreement_change,0.07850384205458948,90
+Isolation Forest,UMAP,mean_feature_ks,0.2883166165255375,90
+Isolation Forest,UMAP,test_score_agreement,0.11714251612444825,90
+Isolation Forest,UMAP,agreement_change,-0.1404047429930935,90
+LOF,AE,mean_feature_ks,0.3167386920195909,90
+LOF,AE,test_score_agreement,0.2496192945631148,90
+LOF,AE,agreement_change,0.30491830267111164,90
+LOF,Consensus Weighted Average,mean_feature_ks,0.47730172449273567,90
+LOF,Consensus Weighted Average,test_score_agreement,0.15535251265588346,90
+LOF,Consensus Weighted Average,agreement_change,0.19841955797011976,90
+LOF,LSCP-AOM,mean_feature_ks,0.17542083384780013,90
+LOF,LSCP-AOM,test_score_agreement,0.0039922624192287115,90
+LOF,LSCP-AOM,agreement_change,-0.05835288307198419,90
+LOF,Maximum,mean_feature_ks,0.1594517841708853,90
+LOF,Maximum,test_score_agreement,-0.15627443717331355,90
+LOF,Maximum,agreement_change,-0.2917808782977322,90
+LOF,Mean,mean_feature_ks,0.3153887311190682,90
+LOF,Mean,test_score_agreement,-0.04271309215129439,90
+LOF,Mean,agreement_change,-0.09320492241840556,90
+LOF,Median,mean_feature_ks,0.33716919784335514,90
+LOF,Median,test_score_agreement,0.04119850187265918,90
+LOF,Median,agreement_change,0.05751327324361032,90
+LOF,PCA,mean_feature_ks,0.36635798658270563,90
+LOF,PCA,test_score_agreement,0.23338683788121986,90
+LOF,PCA,agreement_change,0.2519405687945014,90
+LOF,RAW,mean_feature_ks,0.5158414619088776,90
+LOF,RAW,test_score_agreement,0.029378112524179937,90
+LOF,RAW,agreement_change,0.07568835658723298,90
+LOF,Rank Average,mean_feature_ks,0.4481952504424414,90
+LOF,Rank Average,test_score_agreement,0.2302259538214594,90
+LOF,Rank Average,agreement_change,0.2749063670411985,90
+LOF,UMAP,mean_feature_ks,0.026842820101247066,90
+LOF,UMAP,test_score_agreement,0.04859036094991151,90
+LOF,UMAP,agreement_change,-0.11803103263777419,90
+One-Class SVM,AE,mean_feature_ks,0.16366696986173876,90
+One-Class SVM,AE,test_score_agreement,0.19768777086956285,90
+One-Class SVM,AE,agreement_change,0.21282550449002943,90
+One-Class SVM,Consensus Weighted Average,mean_feature_ks,0.2626847980069898,90
+One-Class SVM,Consensus Weighted Average,test_score_agreement,0.0408778110711554,90
+One-Class SVM,Consensus Weighted Average,agreement_change,0.205525007415346,90
+One-Class SVM,LSCP-AOM,mean_feature_ks,0.2704942997077828,90
+One-Class SVM,LSCP-AOM,test_score_agreement,-0.013507840474132608,90
+One-Class SVM,LSCP-AOM,agreement_change,-0.08345886323414412,90
+One-Class SVM,Maximum,mean_feature_ks,0.3207556488455365,90
+One-Class SVM,Maximum,test_score_agreement,-0.16320533399185083,90
+One-Class SVM,Maximum,agreement_change,-0.04360209079310203,90
+One-Class SVM,Mean,mean_feature_ks,0.17897756504067722,90
+One-Class SVM,Mean,test_score_agreement,0.18592495339069018,90
+One-Class SVM,Mean,agreement_change,0.28021681778571195,90
+One-Class SVM,Median,mean_feature_ks,0.18301100140502125,90
+One-Class SVM,Median,test_score_agreement,0.1120719104092729,90
+One-Class SVM,Median,agreement_change,0.27078351559481756,90
+One-Class SVM,PCA,mean_feature_ks,0.2721899823023418,90
+One-Class SVM,PCA,test_score_agreement,-0.06294604272132362,90
+One-Class SVM,PCA,agreement_change,0.1511709264518253,90
+One-Class SVM,RAW,mean_feature_ks,0.18871620954839083,90
+One-Class SVM,RAW,test_score_agreement,-0.026892430279795553,90
+One-Class SVM,RAW,agreement_change,0.09500016463395178,90
+One-Class SVM,Rank Average,mean_feature_ks,0.13831337202123717,90
+One-Class SVM,Rank Average,test_score_agreement,0.370819442729555,90
+One-Class SVM,Rank Average,agreement_change,0.22895830760999297,90
+One-Class SVM,UMAP,mean_feature_ks,0.28894925299419677,90
+One-Class SVM,UMAP,test_score_agreement,0.28796147672552164,90
+One-Class SVM,UMAP,agreement_change,-0.13828044614561466,90

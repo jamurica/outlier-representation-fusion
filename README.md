@@ -6,6 +6,38 @@ detection on six classical ADBench datasets. See the
 and the [results and runtimes](docs/experiment_results.md) for the
 five-seed findings.
 
+## Main results
+
+The final analysis covers six datasets and five seeds (42–46). At
+`delta=0`, none of the six fusion rules improved either metric on
+average over the retrospectively best single representation for the same
+split and detector. Among the fusion rules, Maximum led mean ROC-AUC for
+Isolation Forest and One-Class SVM, while Mean led Average Precision for
+both. Consensus Weighted Average led both metrics for LOF.
+
+![ROC-AUC fusion gains, mean scores, and stability across seeds](results/analysis/e1_e2_roc_auc.png)
+
+At `delta=2`, mean ROC-AUC fell for all 30 detector–method combinations,
+with drops from 0.015 to 0.313. Mean Average Precision changes ranged
+from a gain of 0.012 to a drop of 0.099.
+
+![Mean ROC-AUC and paired ROC-AUC drop at four shift levels](results/analysis/e3_roc_auc.png)
+
+Associations between label-free indicators and performance loss varied by
+detector, method, and metric. Omitting UMAP from One-Class SVM Mean
+fusion at `delta=2` produced the largest average loss in the ablation,
+reducing ROC-AUC by 0.048 and Average Precision by 0.057.
+
+![Spearman associations between label-free indicators and ROC-AUC loss](results/analysis/e4_indicators_roc_auc.png)
+
+![ROC-AUC changes when omitting one representation from Mean fusion](results/analysis/e4_ablation_roc_auc.png)
+
+[Final CSVs and figures](results/analysis/) ·
+[Average Precision comparison](results/analysis/e1_e2_average_precision.png) ·
+[Average Precision under shift](results/analysis/e3_average_precision.png) ·
+[Average Precision indicators](results/analysis/e4_indicators_average_precision.png) ·
+[Average Precision ablation](results/analysis/e4_ablation_average_precision.png)
+
 ## Environment setup on Windows
 
 The local environment uses Python 3.13.4. From the repository root in
@@ -41,7 +73,7 @@ versions for comparison when reproducing the reported run.
 | [`src/`](src/) | Data loading, preprocessing, representations, detection, fusion, shift, and evaluation |
 | [`scripts/`](scripts/) | Dataset downloader, experiment runner, and analyzer |
 | `data/` | Local ADBench archives, ignored by Git |
-| `results/` | Local result CSVs and figures, ignored by Git |
+| [`results/analysis/`](results/analysis/) | Final experiment CSVs and figures |
 
 ## Datasets
 
@@ -113,13 +145,15 @@ The approved seeds are 42 through 46. To reuse the smoke results for seed
 
 ```powershell
 .\.venv\Scripts\python.exe -m scripts.run_experiments --seeds 43 44 45 46 --output results/stage13_additional.csv
-.\.venv\Scripts\python.exe -m scripts.analyze_experiments results/smoke.csv results/stage13_additional.csv --output-dir results/analysis
+.\.venv\Scripts\python.exe -m scripts.analyze_experiments results/smoke.csv results/stage13_additional.csv --output-dir results/reproduced_analysis
 ```
 
 Use the path of your actual smoke CSV as the first input. The analyzer
 writes a combined results CSV, paired and aggregated E1–E4 tables, and
 PNG plots for both metrics. Use a new output directory for each run.
-A single-seed analysis leaves the seed standard deviation blank.
+The final publication directory is `results/analysis/`. Git ignores
+intermediate runs and regenerated analysis directories elsewhere under
+`results/`. A single-seed analysis leaves the seed standard deviation blank.
 
 ## Citation
 
