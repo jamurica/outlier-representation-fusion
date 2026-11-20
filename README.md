@@ -241,6 +241,21 @@ calibration timings apply to a dataset and seed, test timing also depends
 on the shift level, and evaluation timing additionally depends on the
 detector. Use one value per timing group when aggregating durations.
 
+## Analyze the experiments
+
+The approved seeds are 42 through 46. To reuse the smoke results for seed
+42, run the four remaining seeds and pass both result files to the analyzer.
+
+```powershell
+.\.venv\Scripts\python.exe -m scripts.run_experiments --seeds 43 44 45 46 --output results/stage13_additional.csv
+.\.venv\Scripts\python.exe -m scripts.analyze_experiments results/smoke.csv results/stage13_additional.csv --output-dir results/analysis
+```
+
+Use the path of your actual smoke CSV as the first input. The analyzer
+writes a combined results CSV, paired and aggregated E1–E4 tables, and
+PNG plots for both metrics. Use a new output directory for each run.
+A single-seed analysis leaves the seed standard deviation blank.
+
 ## Citation
 
 Han, S., Hu, X., Huang, H., Jiang, M., & Zhao, Y. (2022).

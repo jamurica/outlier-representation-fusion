@@ -168,7 +168,24 @@ smoke test first, then five repetitions. Expand to ten only with approval.
 Reuse fitted models and scores across experiments when their inputs and
 parameters are identical.
 
-## Implementation details to confirm at the relevant stage
+## Analysis
 
-Confirm the exact seed list and the summaries for stability and
-associations.
+Use seeds 42, 43, 44, 45, and 46. Reuse the one-seed smoke run for seed 42.
+Report ROC-AUC and Average Precision separately.
+
+- **E1.** At `delta=0`, subtract the maximum single-representation test
+  metric from each fusion metric within each dataset, seed, and detector.
+  This retrospective comparator is metric-specific. Report the mean
+  paired gain and the proportion of strictly positive gains.
+- **E2.** At `delta=0`, compute the mean and sample standard deviation
+  across seeds for each dataset, detector, and fusion rule. Average the
+  dataset means and standard deviations with equal weight per dataset.
+- **E3.** Show the mean score and mean paired drop from `delta=0` at
+  every shift level for each detector and method.
+- **E4.** For each detector and method, compute descriptive Spearman
+  correlations between each label-free indicator and metric loss at
+  `delta>0`. Use available pairs and report their count. Shift levels
+  share test splits, so report coefficients without inference or p-values.
+  Omit undefined coefficients. For ablation, report the paired difference
+  between the ablated score metric and the full Mean metric at
+  `delta=0` and `delta=2`.
