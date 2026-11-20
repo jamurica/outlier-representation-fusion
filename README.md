@@ -35,7 +35,7 @@ validating the environment and before running the experiments.
 | --- | --- |
 | `docs/` | Research protocol and methodology |
 | `data/` | Local ADBench datasets |
-| `src/` | ADBench loader and future experiment modules |
+| `src/` | ADBench loader, data splitting, and preprocessing |
 | `scripts/` | Optional dataset downloader and future experiment entry points |
 | `tests/` | Planned tests |
 | `results/` | Local generated CSV files and figures |
@@ -69,6 +69,24 @@ vector, where 0 is normal and 1 is an outlier.
 from src.adbench import load_dataset
 
 X, y = load_dataset("6_cardio.npz")
+```
+
+## Split and standardize
+
+Create one stratified split per dataset and seed, then reuse its indices
+for every method. The two splitting steps allocate about 50% of all rows
+to training and 30% to testing, with the remaining rows used for calibration.
+The scaler fits only the training features and is available for
+transforming new test inputs later.
+
+```python
+from src.adbench import load_dataset
+from src.preprocessing import split_indices, standardize_features
+
+X, y = load_dataset("6_cardio.npz")
+indices = split_indices(y, seed=42)
+features = standardize_features(X, indices)
+y_test = y[indices.test]
 ```
 
 ## Citation
