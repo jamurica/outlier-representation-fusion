@@ -58,8 +58,11 @@ score for each detector.
 ## Score normalization and fusion
 
 Estimate the Z-score mean and standard deviation separately for each
-detector and representation, using only calibration scores. Reuse the
-calibration parameters for every test shift level.
+detector and representation, using only calibration scores. Use
+`StandardScaler` with the population standard deviation (`ddof=0`).
+Use a scale of 1 for constant calibration scores, so transformed scores
+are their deviations from the calibration mean. Reuse the calibration
+parameters for every test shift level.
 
 | Fusion rule | Computation for a test observation |
 | --- | --- |
@@ -146,7 +149,7 @@ parameters are identical.
 
 ## Implementation details to confirm at the relevant stage
 
-Confirm the exact seed list, shift feature-count rounding, score
-normalization and percentile tie conventions, and the summaries for
-stability and associations. Resolve handling of constant scores and
-undefined correlations before computing the affected methods.
+Confirm the exact seed list, shift feature-count rounding, percentile tie
+conventions, and the summaries for stability and associations. Resolve
+handling of constant scores in correlation calculations and undefined
+correlations before computing the affected methods.

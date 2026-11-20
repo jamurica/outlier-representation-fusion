@@ -135,6 +135,20 @@ calibration_scores = score_detectors(detectors, calibration_views["RAW"])
 test_scores = score_detectors(detectors, test_views["RAW"])
 ```
 
+## Score normalization
+
+For each representation, fit one Z-score scaler per detector using its
+calibration scores. Reuse the same scalers for the calibration and test
+scores, including every test shift level.
+
+```python
+from src.normalization import fit_score_scalers, normalize_scores
+
+scalers = fit_score_scalers(calibration_scores)
+normalized_calibration = normalize_scores(calibration_scores, scalers)
+normalized_test = normalize_scores(test_scores, scalers)
+```
+
 ## Citation
 
 Han, S., Hu, X., Huang, H., Jiang, M., & Zhao, Y. (2022).
