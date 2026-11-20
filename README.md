@@ -1,7 +1,10 @@
 # Data Representation Fusion in Outlier Detection
 
 A comparison of score combination methods for batch, unsupervised outlier
-detection. See the [experiment protocol](docs/experiment_protocol.md).
+detection on six classical ADBench datasets. See the
+[experiment protocol](docs/experiment_protocol.md) for the methodology
+and the [results and runtimes](docs/experiment_results.md) for the
+five-seed findings.
 
 ## Environment setup on Windows
 
@@ -26,19 +29,19 @@ The PyTorch index supplies the CPU build.
 .\.venv\Scripts\python.exe -m pip check
 ```
 
-`requirements.txt` lists direct dependencies. Record resolved versions after
-validating the environment and before running the experiments.
+`requirements.txt` lists direct dependencies. The
+[recorded environment](docs/experiment_results.md#environment) provides
+versions for comparison when reproducing the reported run.
 
 ## Repository layout
 
 | Path | Purpose |
 | --- | --- |
-| `docs/` | Research protocol and methodology |
-| `data/` | Local ADBench datasets |
-| `src/` | ADBench loader, data splitting, and preprocessing |
-| `scripts/` | Optional dataset downloader and future experiment entry points |
-| `tests/` | Planned tests |
-| `results/` | Local generated CSV files and figures |
+| [`docs/`](docs/) | Experimental protocol and recorded findings |
+| [`src/`](src/) | Data loading, preprocessing, representations, detection, fusion, shift, and evaluation |
+| [`scripts/`](scripts/) | Dataset downloader, experiment runner, and analyzer |
+| `data/` | Local ADBench archives, ignored by Git |
+| `results/` | Local result CSVs and figures, ignored by Git |
 
 ## Datasets
 
@@ -60,164 +63,26 @@ repository root in PowerShell after setting up the environment.
 
 The downloader checks existing archives and downloads only missing ones.
 Use `--data-dir` to choose an alternative directory. Git ignores `data/`.
+Each archive contains a finite feature matrix `X` and binary labels `y`
+with 0 for normal observations and 1 for outliers.
 
-Load a dataset from Python with `load_dataset`. The loader validates that
-`X` is a finite numeric feature matrix and `y` is a matching binary label
-vector, where 0 is normal and 1 is an outlier.
+## Experimental workflow
 
-```python
-from src.adbench import load_dataset
+Each dataset and seed uses one stratified 50/20/30 train, calibration, and
+test split. Training rows fit the standardizer, PCA, UMAP, autoencoder,
+and detector models. RAW uses the standardized original features.
+Calibration scores determine
+normalization and the fitted fusion settings. The runner reuses these
+models and settings across all four test shift levels. Labels are used
+for stratification and evaluation.
 
-X, y = load_dataset("6_cardio.npz")
-```
-
-## Split and standardize
-
-Create one stratified split per dataset and seed, then reuse its indices
-for every method. The two splitting steps allocate about 50% of all rows
-to training and 30% to testing, with the remaining rows used for calibration.
-The scaler fits only the training features and is available for
-transforming new test inputs later.
-
-```python
-from src.adbench import load_dataset
-from src.preprocessing import split_indices, standardize_features
-
-X, y = load_dataset("6_cardio.npz")
-indices = split_indices(y, seed=42)
-features = standardize_features(X, indices)
-y_test = y[indices.test]
-```
-
-## RAW, PCA, and UMAP
-
-Fit the reduced representations once on standardized training rows, then
-reuse the fitted object for each partition. RAW returns the standardized
-input in its original dimension. UMAP fits on unique training vectors
-and maps the coordinates back to all training rows. Record the installed
-UMAP version with experiment results because its default layout can change
-between releases.
-
-```python
-from src.representations import fit_representations
-
-representations = fit_representations(features.train, seed=42)
-train_views = representations.transform(features.train)
-calibration_views = representations.transform(features.calibration)
-test_views = representations.transform(features.test)
-```
-
-## Autoencoder representation
-
-Fit the autoencoder once on standardized training rows and reuse its
-encoder for each partition.
-
-```python
-from src.autoencoder import fit_autoencoder
-
-autoencoder = fit_autoencoder(features.train, seed=42)
-train_views["AE"] = autoencoder.transform(features.train)
-calibration_views["AE"] = autoencoder.transform(features.calibration)
-test_views["AE"] = autoencoder.transform(features.test)
-```
-
-## Outlier detectors
-
-Fit a separate detector set for each training representation. Reuse the
-fitted models for calibration and test scores. The returned scores are
-continuous, with larger scores indicating greater anomalousness.
-
-```python
-from src.detectors import fit_detectors, score_detectors
-
-detectors = fit_detectors(train_views["RAW"], seed=42)
-calibration_scores = score_detectors(detectors, calibration_views["RAW"])
-test_scores = score_detectors(detectors, test_views["RAW"])
-```
-
-## Score normalization
-
-For each representation, fit one Z-score scaler per detector using its
-calibration scores. Reuse the same scalers for the calibration and test
-scores, including every test shift level.
-
-```python
-from src.normalization import fit_score_scalers, normalize_scores
-
-scalers = fit_score_scalers(calibration_scores)
-normalized_calibration = normalize_scores(calibration_scores, scalers)
-normalized_test = normalize_scores(test_scores, scalers)
-```
-
-## Basic score fusion
-
-For one detector, stack its four representation score vectors as columns
-in RAW, PCA, UMAP, AE order. Keep the rows aligned across representations
-within each partition. Fit the percentile references and consensus
-weights from raw calibration scores.
-
-```python
-from src.fusion import fit_basic_fusion
-
-fusion = fit_basic_fusion(raw_calibration_matrix)
-fused_test = fusion.transform(raw_test_matrix, normalized_test_matrix)
-```
-
-Reuse the fitted fusion for each test shift level. It returns Mean,
-Maximum, Median, Rank Average, and Consensus Weighted Average.
-
-## LSCP-AOM
-
-Compute local regions once for each test partition and reuse them for all
-detectors. Fit the pseudo target separately for each detector using
-its calibration Z-scores in RAW, PCA, UMAP, AE column order.
-
-```python
-from src.lscp import find_local_regions, fit_lscp_aom, sample_subspaces
-
-subspaces = sample_subspaces(features.train.shape[1], seed=42)
-regions = find_local_regions(features.calibration, features.test, subspaces)
-lscp = fit_lscp_aom(normalized_calibration_matrix)
-lscp_scores = lscp.transform(normalized_test_matrix, regions)
-```
-
-## Distribution shift
-
-Sample the shift once per dataset and seed from the training scaler's
-feature variances. Apply each level to the original test rows, then use
-the same scaler to standardize the shifted copy.
-
-```python
-from src.distribution_shift import SHIFT_LEVELS, sample_feature_shift
-
-shift = sample_feature_shift(features.scaler.var_, seed=42)
-for delta in SHIFT_LEVELS:
-    shifted_test = shift.transform(X[indices.test], delta=delta)
-    standardized_test = features.scaler.transform(shifted_test)
-```
-
-## Evaluation and ablation
-
-Use the original test labels to compute ROC-AUC and Average Precision.
-At `delta=0` and `delta=2`, compare full Mean fusion with the four
-leave-one-representation-out means.
-
-```python
-from src.evaluation import evaluate_scores, mean_ablation
-
-full_mean_metrics = evaluate_scores(y_test, normalized_test_matrix.mean(axis=1))
-ablated_metrics = {
-    omitted: evaluate_scores(y_test, scores)
-    for omitted, scores in mean_ablation(normalized_test_matrix).items()
-}
-```
-
-The label-free functions compare test features with calibration using KS
-and compare representation score vectors using Spearman correlation.
+The [runner](scripts/run_experiments.py) shows how the reusable modules
+fit together. The [protocol](docs/experiment_protocol.md) specifies the
+model settings, LSCP-AOM adaptation, shift generator, and comparisons.
 
 ## Run the experiments
 
-Run the full one-seed smoke test on all six datasets from the repository root.
+Run the one-seed smoke test on all six datasets from the repository root.
 
 ```powershell
 .\.venv\Scripts\python.exe -m scripts.run_experiments --seeds 42 --output results/smoke.csv
@@ -225,8 +90,8 @@ Run the full one-seed smoke test on all six datasets from the repository root.
 
 Use `--datasets` to select one or more ADBench archive names and
 `--data-dir` for an alternative dataset directory. For the main run,
-pass the five approved seed values to `--seeds` and choose a new output
-path. The runner uses one PyTorch CPU thread and refuses to overwrite
+use the smoke run as seed 42 and run seeds 43 through 46 as shown below.
+The runner uses one PyTorch CPU thread and refuses to overwrite
 an existing output file.
 
 The CSV contains one row per dataset, seed, shift level, detector and
@@ -261,3 +126,8 @@ A single-seed analysis leaves the seed standard deviation blank.
 Han, S., Hu, X., Huang, H., Jiang, M., & Zhao, Y. (2022).
 *ADBench: Anomaly Detection Benchmark*. Advances in Neural Information
 Processing Systems, 35. [NeurIPS proceedings](https://proceedings.neurips.cc/paper_files/paper/2022/hash/cf93972b116ca5268827d575f2cc226b-Abstract-Datasets_and_Benchmarks.html)
+
+Zhao, Y., Nasrullah, Z., Hryniewicki, M. K., & Li, Z. (2019).
+*LSCP: Locally Selective Combination in Parallel Outlier Ensembles*.
+Proceedings of the SIAM International Conference on Data Mining.
+[Published paper](https://doi.org/10.1137/1.9781611975673.66)
