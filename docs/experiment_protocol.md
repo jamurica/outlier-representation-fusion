@@ -126,8 +126,10 @@ calibration reference. Reuse the pseudo target and subspaces.
 ## Distribution shift
 
 For each dataset and seed, sample 25% of features with nonzero training
-standard deviation and assign each selected feature a random sign from
-{-1, +1}. Reuse that feature set and sign vector at all four shift levels
+standard deviation. Round the feature count to the nearest integer, with
+halves rounded up. Sample columns without replacement and assign each
+selected feature a sign from {-1, +1} with equal probability. Reuse that
+feature set and sign vector at all four shift levels
 (`delta = 0.0, 0.5, 1.0, 2.0`).
 
 For each level, start from the original test features. Before
@@ -164,6 +166,6 @@ parameters are identical.
 
 ## Implementation details to confirm at the relevant stage
 
-Confirm the exact seed list, shift feature-count rounding, and the
-summaries for stability and associations. Resolve handling of undefined
+Confirm the exact seed list and the summaries for stability and
+associations. Resolve handling of undefined
 correlations for label-free agreement before computing it.

@@ -181,6 +181,21 @@ lscp = fit_lscp_aom(normalized_calibration_matrix)
 lscp_scores = lscp.transform(normalized_test_matrix, regions)
 ```
 
+## Distribution shift
+
+Sample the shift once per dataset and seed from the training scaler's
+feature variances. Apply each level to the original test rows, then use
+the same scaler to standardize the shifted copy.
+
+```python
+from src.distribution_shift import SHIFT_LEVELS, sample_feature_shift
+
+shift = sample_feature_shift(features.scaler.var_, seed=42)
+for delta in SHIFT_LEVELS:
+    shifted_test = shift.transform(X[indices.test], delta=delta)
+    standardized_test = features.scaler.transform(shifted_test)
+```
+
 ## Citation
 
 Han, S., Hu, X., Huang, H., Jiang, M., & Zhao, Y. (2022).
