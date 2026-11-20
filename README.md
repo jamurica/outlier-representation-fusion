@@ -89,6 +89,22 @@ features = standardize_features(X, indices)
 y_test = y[indices.test]
 ```
 
+## RAW, PCA, and UMAP
+
+Fit the reduced representations once on standardized training rows, then
+reuse the fitted object for each partition. RAW returns the standardized
+input in its original dimension. Record the installed UMAP version with
+experiment results because its default layout can change between releases.
+
+```python
+from src.representations import fit_representations
+
+representations = fit_representations(features.train, seed=42)
+train_views = representations.transform(features.train)
+calibration_views = representations.transform(features.calibration)
+test_views = representations.transform(features.test)
+```
+
 ## Citation
 
 Han, S., Hu, X., Huang, H., Jiang, M., & Zhao, Y. (2022).
