@@ -107,6 +107,20 @@ calibration_views = representations.transform(features.calibration)
 test_views = representations.transform(features.test)
 ```
 
+## Autoencoder representation
+
+Fit the autoencoder once on standardized training rows and reuse its
+encoder for each partition.
+
+```python
+from src.autoencoder import fit_autoencoder
+
+autoencoder = fit_autoencoder(features.train, seed=42)
+train_views["AE"] = autoencoder.transform(features.train)
+calibration_views["AE"] = autoencoder.transform(features.calibration)
+test_views["AE"] = autoencoder.transform(features.test)
+```
+
 ## Citation
 
 Han, S., Hu, X., Huang, H., Jiang, M., & Zhao, Y. (2022).

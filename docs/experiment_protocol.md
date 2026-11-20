@@ -33,11 +33,15 @@ training rows in their original order. Transform every calibration and
 test row using the fitted UMAP model. Preserve the full partitions for
 detector training, calibration, and evaluation.
 
-Use the encoder output as the autoencoder (AE) representation. Train the
-autoencoder for 50 epochs using Adam and mean squared reconstruction error.
-Prefer PyTorch on CPU. All three reduced representations use
-`k = max(2, min(20, d // 2))`, where `d` is the original feature count.
-Score AE embeddings with the same detectors as the other representations.
+All three reduced representations use `k = max(2, min(20, d // 2))`, where
+`d` is the original feature count. The autoencoder uses the architecture
+`d → h → k → h → d`, with `h = max(16, 2 * k)`. Apply ReLU after each
+hidden layer of width `h`. The bottleneck and reconstruction output are
+linear. Train on standardized training rows with PyTorch on CPU for 50
+epochs using mean squared reconstruction error and Adam with a learning
+rate of 0.001. Shuffle batches of up to 64 rows in each epoch. Use the
+repetition seed for initialization and shuffling. Use the encoder output
+as the AE representation for the same detectors as the other representations.
 
 | Detector | Parameters |
 | --- | --- |
@@ -142,8 +146,7 @@ parameters are identical.
 
 ## Implementation details to confirm at the relevant stage
 
-Confirm the exact seed list, shift feature-count rounding, autoencoder
-architecture and training settings beyond those specified above, score
+Confirm the exact seed list, shift feature-count rounding, score
 normalization and percentile tie conventions, and the summaries for
 stability and associations. Resolve handling of constant scores and
 undefined correlations before computing the affected methods.
